@@ -1,0 +1,93 @@
+<script type="text/javascript" src="../js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../js/Sake-Client.js"></script>
+<script>
+var adjectives = [
+'Super',
+'Bubble',
+'Amazing',
+'Thrilling',
+'Adventure',
+'Fantastic',
+'Charted',
+'Un-Resisted',
+'Peaceful',
+'War',
+'Noire',
+'Grand',
+'Auto',
+'Theft',
+'Bearded',
+'Legend of the ',
+'Footballcraft',
+'Gamify',
+'iGame',
+'Gone',
+'Dead',
+'Dawn of the',
+'Power',
+'Drive the',
+'Invasive',
+'The All-Consuming',
+'Destroy',
+'Kill the',
+'Spank the',
+'Smother the',
+'Dance with a',
+'Learn to drive with a',
+];
+
+
+var nouns = [
+'Ball',
+'Chloroform',
+'Gears',
+'Moustache',
+'Monkey',
+'Gorilla',
+'Zombie',
+];
+
+
+var endingWords = [
+'the second',
+'the third',
+'3',
+'IV',
+'XXVIV',
+'sponsored by Michael Jordon',
+'8',
+'',
+
+];
+
+
+var platformList = [
+'pc',
+'ps3',
+'psp',
+'psn',
+'wii',
+'ds',
+'x360',
+'xbla',
+'iphone',
+'ipad',
+'android',
+'mac',
+'linux'
+];
+
+
+function randomify() {
+var platform = platformList[Math.floor( Math.random() * platformList.length)];
+var name = adjectives[Math.floor( Math.random()*adjectives.length)] +' '+ nouns[Math.floor( Math.random()*nouns.length)] + ' '+ endingWords[Math.floor( Math.random()*endingWords.length )];
+
+createGame( name, 'No description', platform , function(data) {
+console.log( data );
+});
+}
+
+
+for( var i =0; i < 100; i ++ )
+randomify();
+</script>

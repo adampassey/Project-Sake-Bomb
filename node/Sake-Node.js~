@@ -1,0 +1,502 @@
+
+var CouchDB = require('./node-couch/index').CouchDB;
+
+var express = require('express');
+
+
+var app = express.createServer();
+
+app.get('/', function(req, res){
+	res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+	res.end('Hello');
+});
+
+
+app.get('/game/:game_id/?', function(req, res){
+
+	var gameID = req.params.game_id;
+
+	var couch = CouchDB.db('games');
+
+
+	couch.openDoc(gameID,{'include_docs':true,'success':function(responseText){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end(JSON.stringify(responseText));
+	},'error':function(){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end('{"success":"false"}');
+	}
+	
+	});	
+});
+
+app.listen(8080);
+
+app.get('/create_game/:game_name/:description/:platform',function(req,res){
+	var couch = CouchDB.db('games');
+
+	var gameName= req.params.game_name;
+	var description = req.params.description;
+	var platform = req.params.platform;
+	
+	var newGame = {'name':gameName,'description':description,'platform':platform};	
+	
+	couch.saveDoc(newGame,{'include_docs':true,'success':function(responseText){
+		
+			var gameID = responseText._id;
+			CouchDB.db('game_'+gameID).create({
+			'success':function(rT){
+							
+				
+			CouchDB.db('game_'+gameID).saveDoc({'_id':'_design/view','views':{'all': {'map':"function(doc){emit(null,doc);}" },
+																				'prototype':{'map':"function(doc){if(doc.type=='prototype') emit(null,doc);}"} }},
+			{'success':function(rT){
+				
+				//create search view when game db is created
+				CouchDB.db('game_'+gameID).saveDoc({'_id':'_design/search','views':				
+				{ 'all' : {'map':"function(doc) {\
+					 var txt =''; for(var f in doc){ txt+= doc[f]+' ';}\
+				    var words = txt.replace(/[!.,;]+/g,'').toLowerCase().split(' ');\
+				    for (var word in words) {\
+				      emit(words[word], doc);\
+				    }\
+				}"},
+				'prototype' : {'map':"function(doc) {\
+				\
+				  if(doc.type=='prototype'){\
+				  	 var txt = '';\
+				  	 var i = 0; do{i++; txt+= doc._id.substr(0,i)+''; }while(doc._id!=doc._id.substr(0,i));\
+				    var words = txt.replace(/[!.,;]+/g,'').toLowerCase().split(' ');\
+				    for (var word in words) {\
+				      emit(words[word], doc);\
+				    }\
+				  }\
+				}"}} },{'success':function(rT){
+						res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});			
+						res.end(JSON.stringify(responseText));
+					
+					},'error':function(){
+							res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+							res.end('{"success":"false"}');						
+					}					
+				});		
+			},'error':function(){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end('{"success":"false"}');
+			}
+			
+			});			
+						
+			
+			
+			},'error':function(){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end('{"success":"false"}');
+			}
+									
+			});
+			
+			
+	},'error':function(){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end('{"success":"false"}');
+	}
+	
+	});
+});
+
+
+
+app.get('/games/:view_name?/:skip?/:limit?/?', function(req,res){
+	
+	var couch = CouchDB.db('games');
+
+	if(req.params.view_name)
+		var viewName = req.params.view_name;
+	else
+		var viewName = "all";
+	if(req.params.skip)
+		var skip = req.params.skip;
+	else
+		var skip = 0;
+	if(req.params.limit)
+		var limit = req.params.limit;
+	else
+		var limit =0;
+			
+	var opts = {'success':function(responseText){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end(JSON.stringify(responseText));
+	},'error':function(){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end('{"success":"false"}');
+	}
+	
+	};
+	if(skip!=0)
+		opts.skip = skip;
+	if(limit!=0)
+		opts.limit = limit;
+
+	
+	couch.view('view/'+viewName,opts);
+	
+});
+
+
+app.get('/create_type/:game_id/:type_id/:description/:fields/?', function(req,res){
+	var gameID = req.params.game_id;	
+	var typeID = req.params.type_id;
+	
+	var description = req.params.description;
+	var fields = req.params.fields;
+	fields.replace('"','');	
+	fields.replace('\\','"');
+
+	fields = JSON.parse(fields);
+
+	var couch = CouchDB.db('game_'+gameID);
+
+
+	var typeObject = {'_id':typeID, 'type':'prototype','description':description, 'fields':fields};
+	
+	couch.saveDoc(typeObject,{'success':function(responseText){
+		
+		couch.openDoc('_design/view',{'include_docs':true,'success':
+			function(view){			
+				view.views[typeID] = {'map': "function(doc){if(doc.type == '"+typeID+"') emit(null, doc);}" };
+			 
+				couch.saveDoc(view,{'success':function(rT){
+				
+					//add search view when type is created.
+					couch.openDoc('_design/search',{'include_docs':true, 'success':function(results){
+						results.views[typeID] = {'map':"function(doc) {\
+					\
+					  if(doc.type=='"+typeID+"'){\
+					    var txt =''; for(var f in doc){ txt+= doc[f]+' ';}\
+					    var words = txt.replace(/[!.,;]+/g,'').toLowerCase().split(' ');\
+					    for (var word in words) {\
+					      emit(words[word], doc);\
+					    }\
+					  }\
+					}"};
+					
+						couch.saveDoc(results,{'success':function(rT){
+								res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+								res.end(JSON.stringify(responseText));
+						},'error':function(){
+								res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+								res.end('{"success":"false"}');
+						}});					
+							
+					}});
+				
+				
+			}});
+	}});
+	},'error':function(){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end('{"success":"false"}');
+	}
+	
+	});
+});
+
+app.get('/get_type_fields/:game_id/:type_id/?', function(req,res){
+	var gameID = req.params.game_id;	
+	var typeID = req.params.type_id;
+
+		var couch = CouchDB.db('game_'+gameID);
+		
+	couch.openDoc(typeID,{'include_docs':true,'success':function(responseText){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end(JSON.stringify(responseText.fields));
+	},'error':function(){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end('{"success":"false"}');
+	}
+	
+	});
+});
+
+
+/*// Ze function, it does nossing
+
+app.get('/create_view/:game_id/:view_name/?', function(req,res){
+	var gameID = req.params.game_id;	
+
+	var viewName = req.params.view_name;
+	
+		var couch = CouchDB.db('game_'+gameID);
+	
+});*/
+
+
+
+
+
+app.get('/view/:game_id/:type_id/:skip?/:limit?/?', function(req,res){
+	var gameID = req.params.game_id;	
+	var typeID = req.params.type_id;
+
+
+	var viewName = typeID;
+	
+	if(req.params.skip)
+		var skip = req.params.skip;
+	else
+		var skip = 0;
+	if(req.params.limit)
+		var limit = req.params.limit;
+	else
+		var limit =0;
+	
+	var couch = CouchDB.db('game_'+gameID);	
+	
+
+	var opts = {'success':function(responseText){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end(JSON.stringify(responseText));
+	},'error':function(){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end('{"success":"false"}');
+	}
+	
+	};
+	if(skip!=0)
+		opts.skip = skip;
+	if(limit!=0)
+		opts.limit = limit;
+
+	
+	couch.view('view/'+viewName,opts);
+	
+});
+
+app.get('/delete_type/:game_id/:type_id/?', function(req,res){
+	var gameID = req.params.game_id;	
+	var typeID = req.params.type_id;
+	
+	var couch = CouchDB.db('game_'+gameID);
+		
+
+	/*
+	couch.allDocs({'include_docs':true,'success':function(docs){
+
+	
+	for( var doc in docs){
+		if(doc.type == typeID)
+			doc['_deleted'] = true;
+	}
+
+		couch.bulkSave(docs);
+	}});
+	*/
+	
+	
+	//Delete views when type is deleted
+	couch.openDoc('_design/search',{'include_docs':true, 'success':function(results){
+		delete results.views[typeID];
+		couch.saveDoc(results);
+	}});
+	couch.openDoc('_design/view',{'include_docs':true, 'success':function(results){
+		delete results.views[typeID];
+		couch.saveDoc(results);
+	}});
+
+
+		
+	
+	couch.saveDoc({'_id':typeID,'_deleted':true} , {'success': function(responseText){		
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end(JSON.stringify(responseText));
+	},'error':function(resu){
+			
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end('{"success":"false"}');
+	}
+	
+	});	
+	
+});
+
+app.get('/add_type_field/:game_id/:type_id/:field/?', function(req,res){
+	var gameID = req.params.game_id;	
+	var typeID = req.params.type_id;		
+
+	var field = req.params.field;
+
+	field.replace('"','');	
+	field.replace('\\','"');
+
+	field = JSON.parse(field);
+	
+
+	var couch = CouchDB.db('game_'+gameID);
+	couch.openDoc(typeID,{'include_docs':true,'success':
+		function(response){
+			var prototype = response;
+
+
+	prototype.fields.push(field);
+	
+	couch.saveDoc(prototype,{'success':function(responseText){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end(JSON.stringify(responseText));
+	},'error':function(){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end('{"success":"false"}');
+	}
+	
+	});
+}});
+});
+
+app.get('/update_type_field/:game_id/:type_id/:field/?', function(req,res){
+	var gameID = req.params.game_id;	
+	var typeID = req.params.type_id;
+
+	var field = req.params.field;
+
+	field.replace('"','');	
+	field.replace('\\','"');
+
+	field = JSON.parse(field);
+	
+		var couch = CouchDB.db('game_'+gameID);
+	
+	couch.openDoc(typeID,{'include_docs':true,'success':
+		function(response){
+			var prototype = response;
+
+
+	for(var i = 0; i<prototype.fields.length; i++){
+		if(prototype.fields[i].name == field.name){
+			prototype.fields[i].description = field.description;
+		}
+	}
+
+	couch.saveDoc(prototype,{'success':function(responseText){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end(JSON.stringify(responseText));
+	},'error':function(){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end('{"success":"false"}');
+	}
+	
+	});
+}});
+});
+
+app.get('/delete_type_field/:game_id/:type_id/:field/?', function(req,res){
+	var gameID = req.params.game_id;	
+	var typeID = req.params.type_id;
+
+	var field = req.params.field;
+
+	field.replace('"','');	
+	field.replace('\\','"');
+
+	field = JSON.parse(field);
+	
+		var couch = CouchDB.db('game_'+gameID);
+		
+		couch.openDoc(typeID,{'include_docs':true,'success':
+		function(response){
+			var prototype = response;
+
+
+	for(var i = 0; i<prototype.fields.length; i++){
+		if(prototype.fields[i].name == field.name){
+			prototype.fields.splice(i,1);
+			i--;
+		}
+	}
+
+	couch.saveDoc(prototype,{'success':function(responseText){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end(JSON.stringify(responseText));
+	},'error':function(){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end('{"success":"false"}');
+	}
+	
+	});
+}});
+});
+
+
+app.get('/search/:game_id/:type_id/:key/:skip?/:limit?/?', function(req,res){
+	var gameID = req.params.game_id;	
+	var typeID = req.params.type_id;
+	var key = req.params.key.toLowerCase();
+
+	var viewName = typeID;
+	
+	if(req.params.skip)
+		var skip = req.params.skip;
+	else
+		var skip = 0;
+	if(req.params.limit)
+		var limit = req.params.limit;
+	else
+		var limit =0;
+	
+	var couch = CouchDB.db('game_'+gameID);	
+	
+
+	var opts = {'key':key, 'success':function(responseText){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end(JSON.stringify(responseText));
+	},'error':function(){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end('{"success":"false"}');
+	}
+	
+	};
+	if(skip!=0)
+		opts.skip = skip;
+	if(limit!=0)
+		opts.limit = limit;
+
+	
+	couch.view('search/'+viewName,opts);
+	
+});
+
+app.get('/search_games/:view_name/:key/:skip?/:limit?/?', function(req,res){
+	
+	var couch = CouchDB.db('games');
+
+	var viewName = req.params.view_name;
+	var key = req.params.key.toLowerCase();
+
+	if(req.params.skip)
+		var skip = req.params.skip;
+	else
+		var skip = 0;
+	if(req.params.limit)
+		var limit = req.params.limit;
+	else
+		var limit =0;
+			
+	var opts = {'key':key, 'success':function(responseText){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end(JSON.stringify(responseText));
+	},'error':function(){
+			res.writeHead(200, {  "Content-Type": "text/json",  "Access-Control-Allow-Origin": "*"});
+			res.end('{"success":"false"}');
+	}
+	
+	};
+	if(skip!=0)
+		opts.skip = skip;
+	if(limit!=0)
+		opts.limit = limit;
+
+	
+	couch.view('search/'+viewName,opts);
+	
+});
+
+

@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Sake Bomb! Game Select - Gamespy</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		
+		<link rel="stylesheet" type="text/css" href="../css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="../css/gamespy.css" />
+		<link rel="stylesheet" type="text/css" href="../css/main.css" />
+		
+		
+		<script type="text/javascript" src="../js/jquery-1.6.2.min.js"></script>
+		<script type="text/javascript" src="../js/jquery-game-select-controller.js"></script>
+		<script type="text/javascript" src="../js/jquery-global-controller.js"></script>
+		<script type="text/javascript" src="../js/Sake-Client.js"></script>
+		
+	</head>
+	<body>
+	
+	    <div  class="page" id="wrapper">
+		<div id="header">
+			<div id="masthead">
+				<a href="http://poweredbygamespy.com" title="GameSpy Technology Developer Network" rel="home" class="logo" role="logo"></a>
+				<ul class="signin">
+						<li class="imp login">
+							<!-- Login Box -->
+							<div id="loginBoxContainer">
+							  <div id="topnav" class="topnav">
+							  <span id="invite">Have an account?</span>
+								  <a href="#" class="signin_button"><span>Login</span></a>
+							  </div>
+							  <fieldset id="signin_menu">
+								<form name="GameSpyLogin" id="GameSpyLogin">
+									<p>
+									<label>Login using your GameSpyID credentials.</label>
+									</p>
+								  <p>
+								  <label for="username">Email</label>
+								  <input id="username" name="username" value="" title="username" tabindex="4" type="text">
+								  </p>
+								  <p>
+									<label for="password">Password</label>
+									<input id="password" name="password" value="" title="password" tabindex="5" type="password">
+								  </p>
+								  <p class="remember">
+									<input id="signin_submit" value="Login" tabindex="6" type="submit">
+									<img id="icon-busy" src="http://developer.poweredbygamespy.com/shared/images/green_rot.gif" />
+								  </p>	
+									<p><a href="http://developer.poweredbygamespy.com/loginfaq" id="loginfaq">Need help logging in?</a></p> 
+								  <p class="forgot"> <a id="forgot_password">Forgot your password?</a> </p>
+								  <div id="login-message"></div>
+								</form>
+							  </fieldset>
+							</div>
+							<!-- #Login Box -->
+						</li>
+						<li id="start_button" class="last"><a class="button" href="http://developer.poweredbygamespy.com/user/register">Apply for Access</a></li>
+				 </ul>
+			</div><!-- #masthead -->
+			<div class="menu-header">
+				<div class="menu-wrap">
+					<div class="menu-main-menu-container">
+						<ul id="menu-main-menu" class="menu">
+							<li class="menu-item" id="menu-item-home"><a href="http://poweredbygamespy.com/">Home</a></li>
+							<li class="menu-item" id="menu-item-blog"><a href="http://poweredbygamespy.com/blog">Blog</a></li>
+							<li class="menu-item" id="menu-item-why"><a href="http://poweredbygamespy.com/why/">Why GameSpy?</a></li>
+							<li class="menu-item" id="menu-item-features"><a href="http://poweredbygamespy.com/features/">Features</a></li>
+							<li class="menu-item" id="menu-item-status"><a href="http://poweredbygamespy.com/status/">Status</a></li>
+							<li class="menu-item" id="menu-item-about"><a href="http://poweredbygamespy.com/about/">About</a></li>
+							<li class="menu-item" id="menu-item-press"><a href="http://poweredbygamespy.com/category/press/">Press</a></li>
+						</ul>
+					</div>
+					<ul id="" class="menu menu-developer-menu">
+						<li class="menu-item" id="menu-item-forum"><a href="http://developer.poweredbygamespy.com/forum">Forums</a></li>
+						<li class="menu-item" id="menu-item-wiki"><a href="http://docs.poweredbygamespy.com">Docs</a></li>
+					</ul>
+					<ul class="menu menu-right" id="menu-item-tools">
+						<li class="menu-item dropdown" id="tools-menu">
+							<a href="#">Tools</a>
+							<div id="tools-panel" style="display: none;">
+								<ul>
+									<li><a href="http://tools.poweredbygamespy.com/ATLAS2/">ATLAS 2.0</a></li>
+									<li><a href="http://tools.poweredbygamespy.com/BrigadesAdmin/">Brigades</a></li>
+									<li><a href="http://tools.poweredbygamespy.com/cdkeyadmin">CD Key Admin</a></li>
+			                                                <li><a href="http://tools.poweredbygamespy.com/masterserver">Master Server List</a></li>
+									<li><a href="http://tools.poweredbygamespy.com/sake/">Sake</a></li>
+								</ul>
+							</div>
+						</li>
+						<li class="menu-item  menu-item-dashboard" id="menu-item-dashboard">
+							<a href="http://developer.poweredbygamespy.com/dashboard">Dashboard</a>
+						</li>
+					</ul>
+				</div>
+			</div>	
+		</div>
+	</div>
+	
+	<!-- start of my content -->
+	<div class="window" id="mainWindow">
+		<ul class="sakeBreadcrumb">
+			<li><a href="#">Admin</a></li>
+			<li><a href="#">Tools</a></li>
+			<li><a href="#">Sake</a></li>
+		</ul>
+		<div class="frame">
+			<div class="sakeRightColumn">
+				<h3 class="rightColumnHeadline">Choose your game</h3>
+				<div class="sakeRightColumnInterior"></div>
+			</div>			
+			<div class="sakeLeftColumn"></div>
+			<div class="clearBoth"></div>
+		</div>
+	</div>
+	<!-- end of my content -->
+	
+	<div id="footer" role="contentinfo">
+    <div class="content">
+        <ul class="xoxo">
+            <li class="logo">
+                <a href="http://www.ign.com" class="logo-img"></a>
+                <div class="copyright">
+                    Copyright 2002 - 2011, GameSpy Industries, Inc.                </div>
+                <div class="legal">
+                    <a href="/page/terms-use">Terms of Use</a>
+                    <a href="/page/privacy-policy">Privacy Policy</a>
+               </div>
+            </li>
+        </ul>
+        <ul class="xoxo">
+            <li id="text-6" class="widget-container widget_text"><h3 class="widget-title">Follow us on</h3>
+                <div class="textwidget">
+                    <ul>
+                        <li class="facebook"><a href="http://www.facebook.com/gamespytech">Facebook</a></li>
+                        <li class="twitter"><a href="http://twitter.com/gamespytech">Twitter</a></li>
+                        <li class="linkedin"><a href="http://www.linkedin.com/groups?mostPopular=&gid=3024904">Linkedin</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+	</div>
+    </div>
+
+	
+	</body>
+</html>

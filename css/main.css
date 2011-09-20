@@ -1,0 +1,146 @@
+/* because apparently reset doesn't reset fieldsets or legends...?! */
+* { border: none; }
+fieldset { border: none; }
+input, textarea { outline:none; }
+textarea { resize: none; font-family: "Helvetica-Neueu", Helvetica, Arial, sans-serif; }
+
+.window { width: 100%; }
+	.frame { width: 980px; margin: 0 auto; }
+	
+/* breadcrumb */						
+.sakeBreadcrumb { width: 980px; margin: 0 auto; }
+	.sakeBreadcrumb li { float: left; font-size: 6px; color: #979797; }
+		.sakeBreadcrumb li a { float: left; font-size: 10px; color: #343132; padding: 3px 13px 3px 0px; margin-right: 6px;
+								background: url('../img/sakeBreadcrumbRaquo.png') center right no-repeat;}
+			.sakeBreadcrumb li:last-child a { color: #377d17; background: none; }
+			
+/* main window / frame */
+#mainWindow { background: url('../img/bkg-ltgray-grain.jpg') repeat; padding: 35px 0; }
+	#mainWindow .frame { background: #FFF; border: 1px solid: #bbbcbd; clear: left; margin-top: 45px; 
+						-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;
+						-webkit-box-shadow: 0px 0px 5px #8c8c8c; -moz-box-shadow: 0px 0px 5px #8c8c8c; 
+						box-shadow: 0px 0px 5px #8c8c8c;}
+						
+/* left column navigation */
+.sakeLeftColumn { background: #f0f0f0 url('../img/leftColumnShine.png') top left no-repeat; 
+				height: 100%; width: 170px; border-right: 1px solid #c4c4c6; overflow: visible;
+				-webkit-border-top-left-radius: 3px; -moz-border-radius-topleft: 3px; 
+				-webkit-border-bottom-left-radius: 3px; -moz-border-radius-bottomleft: 3px; }
+	.splitContentHolder .sakeLeftColumn ul { padding-top: 20px; }
+	.sakeLeftColumn ul { padding-top: 30px; }
+	.sakeLeftColumn ul li { margin-bottom: 0;}
+	.sakeLeftColumn ul li a { display: block; padding: 10px 35px; font-size: 16px; color: #636363; 
+							text-shadow: #FFF 1px 1px 2px; border-bottom: 1px solid #e7e7e8; }
+		.sakeLeftColumn ul li a:hover { color: #1a1a1a; text-decoration: none; }
+		.sakeLeftColumnArrow { width: 9px; height: 15px; background: url('../img/sakeLeftColumnArrow.png') no-repeat; float: right;
+							 margin-right: -9px; margin-top: 42px;
+							 position: relative; z-index: 9999;}
+			.splitContentHolder .sakeLeftColumnArrow { margin-top: 72px; }
+							 
+/* right column */
+.sakeRightColumn { width: 810px; height: 100%; float: right; }
+	.sakeRightColumnInterior { display: block; padding: 20px; }
+		.rightColumnHeadline { color: #3e3e3e; font-size: 14px; display: block; padding: 5px 5px 5px 20px; background: url('../img/gameHeadingBg.png') repeat;
+								border-left: 1px solid #ccc; border-bottom: 1px solid #f4f4f4; }
+	.griddedGameSelect li { float: left; }
+		.griddedGameSelect li a { float: left; width: 350px; padding: 8px; margin-right: 8px; 
+									position: relative; 
+									-webkit-border-radius: 5px; -moz-border-radius: 5px;  }
+			.boxart-sm { float: left; margin: 0 10px 10px 0; border: 1px solid #d2d2d2; 
+						-webkit-box-shadow: 0px 0px 8px #c5c5c5; -moz-box-shadow: 0px 0px 8px #c5c5c5;
+						box-shadow: 0px 0px 8px #c5c5c5;}
+			.griddedGameSelect li a strong.gametitle { color: #292727; font-size: 16px; font-weight: bold; display: block; }
+			.gameid { color: #b6b6b6; font-size: 12px; display: block; line-height: 14px; margin-top:7px; }
+				.griddedGameSelect li a:hover img.boxart-sm,
+					.griddedGameSelect li a:hover strong.gametitle,
+					.griddedGameSelect li a:hover span.gameid,
+					.griddedGameSelect li a:hover { text-decoration: none; }
+				.griddedGameSelect li a:hover { background: #f4f4f4; }
+
+/* the game heading */
+.gameHeading { padding: 30px 30px 0px 30px; background:url('../img/gameHeadingBg.png') repeat; 
+				-webkit-border-top-left-radius: 3px; -webkit-border-top-right-radius: 3px; 
+				-moz-border-radius-topleft: 3px; -moz-border-radius-topright: 3px; }
+	.gameHeading h1 { font-size: 32px; color: #222222; line-height: 28px; margin: 0; padding: 0; } /* reset!? */
+	.gameHeading h2 { font-size: 24px; color: #7a7a7a; font-weight: 200; margin: 3px; padding: 0; line-height: 28px; }
+	.gameHeading .createTableButton, .createFieldButton { float: right; }
+	
+	/* inside the banner */
+	#sakeSearchTablesForm { float: right; padding: 10px 10px 0 0; }
+		#searchTablesInput { font-size: 10px; padding: 5px 8px; 
+								-webkit-border-radius: 12px; -moz-border-radius: 12px; 
+								-webkit-box-shadow: inset 1px 1px 3px #8c8c8c; -moz-box-shadow: inset 1px 1px 3px #8c8c8c;}
+		#searchTablesInput:focus, #searchTablesInput:hover, #searchTablesInput:active { outline:none; background: #FFF;  }
+		
+	/* tables */
+	.sakeTable { width: 100%; }
+		.sakeTable th { background: #f1f1f1; border-bottom: 1px solid #cccccc; font-size: 11px; color: #636363; font-weight: normal; }
+		.sakeTable tr { border-bottom: 1px solid #cccccc; }
+		.sakeTable .rowTitle { font-size: 16px; color: #343132; font-weight: bold; }
+			.sakeTable a.rowTitle:hover { color: #343132; text-decoration: underline; }
+		.sakeTable .rowDesc { font-size: 12px; color: #787878; }
+		.sakeTable strong { font-weight: bold; color: #343132; }
+	.sakeTable tr:nth-child(odd) td { background: #f7f7f7; }
+		
+
+/* global usage */
+.clearBoth { clear: both; }
+	
+	/* gray button */
+	.sakeGrayButton { color: #FFF; width: 143px; height: 23px; display: block; background: url('../img/buttonsGray.png') no-repeat; 
+						font-size: 12px; text-align: center; padding-top: 9px; font-weight: bold; 
+						text-shadow: #000 1px 1px 3px;}
+		.sakeGrayButton:hover { background:url('../img/buttonsGray.png') 0 -32px no-repeat; text-decoration: none; color: #FFF; }
+		
+	/* banner */
+	.sakeBannerContainer { width: 1020px; height: 70px; margin-left: -20px; }
+	.sakeBanner { width: 1020px; height: 48px; 
+					/* background: #343434 url('../img/darkBannerBg.png') repeat-x; */ 
+					background: #343434 url('../img/bkg-drkgray-grain.jpg') repeat;  }
+		.sakeBannerRightFlap { width: 20px; height: 20px; background: url('../img/sakeBannerFlaps.png') 0px -21px no-repeat; float: right; }
+		.sakeBannerLeftFlap { width: 20px; height: 20px; background: url('../img/sakeBannerFlaps.png') no-repeat; float: left; }
+	/* pull up anything under the banner */
+	.underBanner { margin-top: -22px; }
+	.splitContentHolder { height: 100%; }
+	
+	.sakePaginationList { float: right; clear: both; margin: 12px;  }
+		.sakePaginationList li { float: left; }
+			.sakePaginationList li a { float: left; font-size: 12px; color: #6c6c6c; font-weight: 300; padding: 5px 8px; 
+										-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; 
+										border: 1px solid rgba(0,0,0,0);}
+				.sakePaginationList li a:hover { background: #f1f1f1; text-decoration: none; border: 1px solid #ccc;  }
+				.sakePaginationList li a.active { background: #222222; font-weight: bold; color: #FFF; 
+													box-shadow: 0px 0px 5px #6a6a6a;}
+					.sakePaginationList li a.active:hover { text-decoration: none; }
+					
+	/* popup form */
+	.popupForm { position: absolute; display: none; background: #343434; padding: 20px; z-index: 10001;
+				background: #dfdfdf url('../img/popupFormBg.png') repeat-x; 
+				-webkit-border-radius: 3px; -moz-border-radius: 3px; 
+				box-shadow: 0px 0px 20px #1a1a1a; }
+		.popupForm label { color: #3e3e3e; display: block; float: none; text-align: left; font-weight: normal; font-size: 10px; margin: 0px; }
+		.popupFrom li { margin-bottom: 10px; }
+		.popupForm legend { font-size: 16px; font-style: normal; color: #1a1a1a; font-weight: bold; padding: 0; background: none;  }
+		.popupForm fieldset { padding: 10px; }
+		.popupForm input.defaultSubmit { font-size: 10px; padding: 8px 10px; display: block; background: #222; 
+										color: #FFF; font-weight: bold;}
+		.popupForm input.defaultCancel { font-size: 10px; padding: 8px 10px; display: block; background: #FFF; color: #1a1a1a; float: right; }
+			.popupForm input.defaultSubmit:hover { cursor:pointer; background: #000; }
+			.popupForm input.defaultCancel:hover { background: #f1f1f1;}
+		/* customized popup forms */
+		#createTableForm, #createFieldForm { margin-left: 610px;  }
+		.popupForm .defaultResponse { display: none; font-weight: bold; font-size: 12px; margin: 0 10px;}
+
+		#tableDescription, #tableName,#fieldDescription, #fieldName{ width: 350px; }
+
+		
+	.showMoreContent { display: none; }
+	#tableInfoContent { padding: 20px; display: none; }
+		#tableInfoContent p { color: #1a1a1a; }	
+		#tableHolderTable .trashIcon { display: none; float: right; }
+			#tableHolderTable tr:hover .trashIcon { display: block; }
+	
+	/* misc links */
+	.inlineGreenLink { font-weight: bold; color: #539e30; text-decoration: none; }
+		.inlineGreenLink:hover { text-decoration: underline; }
+		.trashIcon { background: url('../img/icon-trash-sm.png') no-repeat; width: 16px; height: 16px; display: block; text-indent: -9999px; }
